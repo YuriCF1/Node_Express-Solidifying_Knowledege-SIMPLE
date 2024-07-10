@@ -6,7 +6,7 @@ dotenv.config({ path: "./.env" }); //Durante desenvolvimento
 
 async function connectOnDatabase() {
   mongoose.connect(
-    `mongodb+srv://yuricruzfranca:${process.env.PASSWORD}@clusterfreegooglecloud.if5t6ww.mongodb.net/livraria?retryWrites=true&w=majority&appName=ClusterFreeGoogleCloud`
+    `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@clusterfreegooglecloud.if5t6ww.mongodb.net/${process.env.DB}?retryWrites=true&w=majority&appName=ClusterFreeGoogleCloud`
   );
 
   return mongoose.connection;

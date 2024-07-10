@@ -1,6 +1,5 @@
 import express from "express";
 import connectOnDatabase from "./config/dbConnect.js";
-import livro from "./models/Livro.js";
 
 const conexao = await connectOnDatabase();
 
@@ -19,14 +18,23 @@ conexao.once("open", () => {
 const app = express();
 app.use(express.json());
 
+const livros = [
+  {
+    id: 1,
+    titulo: "O Senhor dos Anéis",
+  },
+  {
+    id: 2,
+    titulo: "O Hobbit",
+  },
+];
+
 app.get("/", (req, res) => {
   res.status(200).send("Curso de Node.js");
 });
 
-app.get("/livros", async (req, res) => {
-  const listaLivros = await livro.find({}); //find = método mongoose. Não passei parâmetro então ele vai trazer tudo
-  console.log(listaLivros);
-  res.status(200).json(listaLivros);
+app.get("/livros", (req, res) => {
+  res.status(200).json(livros);
 });
 
 app.post("/livros", (req, res) => {
@@ -39,6 +47,12 @@ app.get("/livros/:id", (req, res) => {
   const index = buscaLivros(id);
   res.status(200).json(livros[index]);
 });
+
+function buscaLivros(id) {
+  return livros.findIndex((liv) => {
+    return liv.id === +id;
+  });
+}
 
 app.put("/livros/:id", (req, res) => {
   const index = buscaLivros(req.params.id);
