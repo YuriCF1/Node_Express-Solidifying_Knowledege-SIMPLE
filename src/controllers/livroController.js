@@ -23,6 +23,42 @@ class LivroController {
         .json({ message: `FALHA ao cadastrar livro - ${err.message}` });
     }
   }
+
+  static async buscaLivroPorId(req, res) {
+    try {
+      const idLivro = req.params.id;
+      const livroBuscado = await livro.findById(idLivro);
+      res.status(201).json(livroBuscado);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: `FALHA ao buscar livro - ${err.message}` });
+    }
+  }
+
+  static async atualizarLivro(req, res) {
+    try {
+      const idLivro = req.params.id;
+      await livro.findByIdAndUpdate(idLivro, req.body); //https://mongoosejs.com/docs/api/model.html#Model.findByIdAndUpdate()
+      res.status(201).json({ message: "Livro atualizado" });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: `FALHA ao atualizar o livro - ${err.message}` });
+    }
+  }
+
+  static async excluirLivro(req, res) {
+    try {
+      const idLivro = req.params.id;
+      await livro.findByIdAndDelete(idLivro);
+      res.status(200).json({ message: "Livro excluído com sucesso!" });
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: `FALHA na exclusão do livro - ${err.message}` });
+    }
+  }
 }
 
 export default LivroController;
