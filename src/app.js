@@ -1,6 +1,6 @@
 import express from "express";
 import connectOnDatabase from "./config/dbConnect.js";
-import livro from "./models/Livro.js";
+import routes from "../routes/index.js";
 
 const conexao = await connectOnDatabase();
 
@@ -17,17 +17,7 @@ conexao.once("open", () => {
 });
 
 const app = express();
-app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.status(200).send("Curso de Node.js");
-});
-
-app.get("/livros", async (req, res) => {
-  const listaLivros = await livro.find({}); //find = método mongoose. Não passei parâmetro então ele vai trazer tudo
-  console.log(listaLivros);
-  res.status(200).json(listaLivros);
-});
+routes(app);
 
 app.post("/livros", (req, res) => {
   livros.push(req.body);
