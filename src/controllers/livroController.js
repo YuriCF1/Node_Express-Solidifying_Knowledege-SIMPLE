@@ -2,17 +2,17 @@ import { autor } from "../models/Autor.js";
 import livro from "../models/Livro.js";
 
 class LivroController {
-  static async listarLivros(req, res) {
+  static async listarLivros(req, res, next) {
     //static = Possibilita a chamada da função sem precisar criar um classe com 'new'
     try {
       const listaLivros = await livro.find({}); //find = método mongoose. Não passei parâmetro então ele vai trazer tudo
       res.status(200).json(listaLivros);
     } catch (error) {
-      res.status(500).json({ message: `Falha na requisição, erro: ${error}` });
+     next(error)
     }
   }
 
-  static async cadastrarLivro(req, res) {
+  static async cadastrarLivro(req, res, next) {
     const novoLivro = req.body;
     let autorEncontrado = null;
     try {
@@ -28,26 +28,22 @@ class LivroController {
       res
         .status(201)
         .json({ message: "Livro cadastrado com sucesso", livro: livroCriado });
-    } catch (err) {
-      res
-        .status(500)
-        .json({ message: `FALHA ao cadastrar livro - ${err.message}` });
+    } catch (error) {
+      next(error)
     }
   }
 
-  static async buscaLivroPorId(req, res) {
+  static async buscaLivroPorId(req, res, next) {
     try {
       const idLivro = req.params.id;
       const livroBuscado = await livro.findById(idLivro);
       res.status(201).json(livroBuscado);
-    } catch (err) {
-      res
-        .status(500)
-        .json({ message: `FALHA ao buscar livro - ${err.message}` });
+    } catch (error) {
+      next(error)
     }
   }
 
-  static async atualizarLivro(req, res) {
+  static async atualizarLivro(req, res, next) {
     try {
       const idLivro = req.params.id;
 
@@ -86,39 +82,32 @@ class LivroController {
       res
         .status(200)
         .json({ message: "Livro atualizado", livro: livroAtualizado });
-    } catch (err) {
-      res
-        .status(500)
-        .json({ message: `FALHA ao atualizar o livro - ${err.message}` });
+    } catch (error) {
+      next(error)
     }
   }
 
-  static async excluirLivro(req, res) {
+  static async excluirLivro(req, res, next) {
     try {
       const idLivro = req.params.id;
       await livro.findByIdAndDelete(idLivro);
       res.status(200).json({ message: "Livro excluído com sucesso!" });
-    } catch (err) {
-      res
-        .status(500)
-        .json({ message: `FALHA na exclusão do livro - ${err.message}` });
+    } catch (error) {
+      next(error)
     }
   }
 
-  static async listarLivroPorAutor(req, res) {
+  static async listarLivroPorAutor(req, res, next) {
     const nomeAutor = req.query.autor;
     try {
       const livrosPorAutor = await livro.find({ "autor.nome": nomeAutor });
       res.status(200).json(livrosPorAutor);
-    } catch (err) {
-      console.error("Erro ao buscar livro:", err);
-      res
-        .status(500)
-        .json({ message: `FALHA ao buscar livro - ${err.message}` });
+    } catch (error) {
+      next(error)
     }
   }
 
-  static async buscarComplexaLivros(req, res) {
+  static async buscarComplexaLivros(req, res, next) {
     const { titulo, autor, editora, precoMaximo } = req.query;
 
     let query = {};
@@ -142,10 +131,8 @@ class LivroController {
     try {
       const livrosEncontrados = await livro.find(query);
       res.status(200).json(livrosEncontrados);
-    } catch (err) {
-      res
-        .status(500)
-        .json({ message: `FALHA ao buscar livros - ${err.message}` });
+    } catch (error) {
+      next(error)
     }
   }
 }
