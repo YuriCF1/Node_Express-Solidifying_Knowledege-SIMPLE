@@ -70,6 +70,21 @@ class LivroController {
         .json({ message: `FALHA na exclusão do livro - ${err.message}` });
     }
   }
+
+  static async listarLivroPorAutor(req, res) {
+    const nomeAutor = req.query.autor;
+    console.log("Nome do Autor:", nomeAutor); // Adiciona log para verificar o nome do autor recebido
+    try {
+      const livrosPorAutor = await livro.find({ "autor.nome": nomeAutor });
+      console.log("Livros Encontrados:", livrosPorAutor); // Adiciona log para verificar os livros encontrados
+      res.status(200).json(livrosPorAutor);
+    } catch (err) {
+      console.error("Erro ao buscar livro:", err); // Adiciona log para verificar o erro detalhado
+      res
+        .status(500)
+        .json({ message: `FALHA ao buscar livro - ${err.message}` });
+    }
+  }
 }
 
 export default LivroController;
