@@ -50,9 +50,43 @@ class LivroController {
   static async atualizarLivro(req, res) {
     try {
       const idLivro = req.params.id;
-      await livro.findByIdAndUpdate(idLivro, req.body); //https://mongoosejs.com/docs/api/model.html#Model.findByIdAndUpdate()
-      res.status(201).json({ message: "Livro atualizado" });
-    } catch (error) {
+
+      if (req.body.autor) {
+        var autorAtualizado = await autor.findById(req.body.autor);
+        console.log(autorAtualizado);
+        if (!autorAtualizado) {
+          return res.status(404).json({ message: "Autor não encontrado" });
+        }
+      }
+
+      const update = {};
+      if (req.body.titulo) {
+        update.titulo = req.body.titulo;
+      }
+      if (req.body.editora) {
+        update.editora = req.body.editora;
+      }
+      if (req.body.preco) {
+        update.preco = parseFloat(req.body.preco);
+      }
+      if (req.body.paginas) {
+        update.paginas = parseInt(req.body.paginas);
+      }
+      if (req.body.autor) {
+        update.autor = autorAtualizado;
+      }
+
+      const livroAtualizado = await livro.findByIdAndUpdate(idLivro, update, {
+        new: true,
+      });
+      if (!livroAtualizado) {
+        return res.status(404).json({ message: "Livro não encontrado" });
+      }
+
+      res
+        .status(200)
+        .json({ message: "Livro atualizado", livro: livroAtualizado });
+    } catch (err) {
       res
         .status(500)
         .json({ message: `FALHA ao atualizar o livro - ${err.message}` });
@@ -73,16 +107,45 @@ class LivroController {
 
   static async listarLivroPorAutor(req, res) {
     const nomeAutor = req.query.autor;
-    console.log("Nome do Autor:", nomeAutor); // Adiciona log para verificar o nome do autor recebido
     try {
       const livrosPorAutor = await livro.find({ "autor.nome": nomeAutor });
-      console.log("Livros Encontrados:", livrosPorAutor); // Adiciona log para verificar os livros encontrados
       res.status(200).json(livrosPorAutor);
     } catch (err) {
-      console.error("Erro ao buscar livro:", err); // Adiciona log para verificar o erro detalhado
+      console.error("Erro ao buscar livro:", err);
       res
         .status(500)
         .json({ message: `FALHA ao buscar livro - ${err.message}` });
+    }
+  }
+
+  static async buscarComplexaLivros(req, res) {
+    const { titulo, autor, editora, precoMaximo } = req.query;
+
+    let query = {};
+
+    if (titulo) {
+      query.titulo = { $regex: titulo, $options: "i" }; // Busca case-insensitive por título
+    }
+
+    if (autor) {
+      query["autor.nome"] = { $regex: autor, $options: "i" }; // Busca case-insensitive por nome do autor
+    }
+
+    if (editora) {
+      query.editora = { $regex: editora, $options: "i" }; // Busca case-insensitive por editora
+    }
+
+    if (precoMaximo) {
+      query["preco"] = { $lte: parseFloat(precoMaximo) }; // Busca por livros com preço menor ou igual ao preço máximo
+    }
+
+    try {
+      const livrosEncontrados = await livro.find(query);
+      res.status(200).json(livrosEncontrados);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: `FALHA ao buscar livros - ${err.message}` });
     }
   }
 }
