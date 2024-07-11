@@ -1,6 +1,6 @@
 import express from "express";
 import connectOnDatabase from "./config/dbConnect.js";
-import routes from "../routes/index.js";
+import routes from "./routes/index.js";
 
 const conexao = await connectOnDatabase();
 
@@ -18,12 +18,6 @@ conexao.once("open", () => {
 
 const app = express();
 routes(app);
-
-app.delete("/livros/:id", (req, res) => {
-  const index = buscaLivros(req.params.id);
-  livros.splice(index, 1);
-  res.status(200).send("Livro removido com sucesso!"); //204 não retorna nenhuma mensagem
-});
 
 app.listen(8000, () => {
   console.log("Servidor na porta 8000 com o Express");
