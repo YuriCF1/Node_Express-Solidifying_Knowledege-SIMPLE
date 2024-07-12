@@ -5,10 +5,11 @@ class LivroController {
   static async listarLivros(req, res, next) {
     //static = Possibilita a chamada da função sem precisar criar um classe com 'new'
     try {
+      // throw new Error();
       const listaLivros = await livro.find({}); //find = método mongoose. Não passei parâmetro então ele vai trazer tudo
       res.status(200).json(listaLivros);
     } catch (error) {
-     next(error)
+      next(error);
     }
   }
 
@@ -29,7 +30,7 @@ class LivroController {
         .status(201)
         .json({ message: "Livro cadastrado com sucesso", livro: livroCriado });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -39,7 +40,7 @@ class LivroController {
       const livroBuscado = await livro.findById(idLivro);
       res.status(201).json(livroBuscado);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -83,7 +84,7 @@ class LivroController {
         .status(200)
         .json({ message: "Livro atualizado", livro: livroAtualizado });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -93,7 +94,7 @@ class LivroController {
       await livro.findByIdAndDelete(idLivro);
       res.status(200).json({ message: "Livro excluído com sucesso!" });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -103,7 +104,7 @@ class LivroController {
       const livrosPorAutor = await livro.find({ "autor.nome": nomeAutor });
       res.status(200).json(livrosPorAutor);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -132,7 +133,7 @@ class LivroController {
       const livrosEncontrados = await livro.find(query);
       res.status(200).json(livrosEncontrados);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }
