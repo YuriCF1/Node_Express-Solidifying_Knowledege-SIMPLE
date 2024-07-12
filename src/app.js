@@ -19,6 +19,20 @@ conexao.once("open", () => {
 });
 
 const app = express();
+// app.use((req, res) => {
+//   res.status(200).send({ mensagem: "Resposta do novo middleware" }); 1-//Caso um 'send' seja enviado. O fluxo para nele. Afinal, apenas uma resposta pode ser enviada para cada requisição.
+// });
+
+// app.use((req, res, next) => {
+//   console.log("Código de um novo middleware"); 2-//Para isso serve o next, para que ele consiga fazer alguma lógica, sem para o fluxo
+//   next();
+// });
+
+// app.get("/livros", (req, res, next) => {
+//   console.log("Middleware registrado no GET da rota /livros"); 3-//Exemplo de implementação de middleware para uma rota específica
+//   next();
+// });
+
 routes(app);
 
 app.use(manipuladorDeErros);
