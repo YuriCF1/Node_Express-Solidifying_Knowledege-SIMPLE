@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { autor } from "../models/Autor.js";
+import NaoEncontrado from "../Errors/NaoEncontrado.js";
 
 class AutorController {
   static async listarAutores(req, res, next) {
@@ -30,7 +31,7 @@ class AutorController {
       if (autorBuscado) {
         res.status(201).json(autorBuscado);
       } else {
-        res.status(404).json({ message: `Autor não encontrado` });
+        next(new NaoEncontrado("Autor não encontrado"))
       }
     } catch (err) {
       next(err)

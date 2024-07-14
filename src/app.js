@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import connectOnDatabase from "./config/dbConnect.js";
 import routes from "./routes/index.js";
 import manipuladorDeErros from "./middleware/manipuladorDeErros.js";
+import manipulador404 from "./middleware/manipulador404.js";
 
 const conexao = await connectOnDatabase();
 
@@ -34,6 +35,8 @@ const app = express();
 // });
 
 routes(app);
+
+app.use(manipulador404);
 
 app.use(manipuladorDeErros);
 
