@@ -1,6 +1,6 @@
+import NaoEncontrado from "../Errors/NaoEncontrado.js";
 import { autor } from "../models/Autor.js";
 import livro from "../models/Livro.js";
-
 class LivroController {
   static async listarLivros(req, res, next) {
     //static = Possibilita a chamada da função sem precisar criar um classe com 'new'
@@ -38,7 +38,11 @@ class LivroController {
     try {
       const idLivro = req.params.id;
       const livroBuscado = await livro.findById(idLivro);
-      res.status(201).json(livroBuscado);
+      if (livroBuscado !== null) {
+        res.status(200).send(livroResultado);
+      } else {
+        next(new NaoEncontrado("Id do livro não localizado."));
+      }
     } catch (error) {
       next(error);
     }
@@ -50,9 +54,8 @@ class LivroController {
 
       if (req.body.autor) {
         var autorAtualizado = await autor.findById(req.body.autor);
-        console.log(autorAtualizado);
         if (!autorAtualizado) {
-          return res.status(404).json({ message: "Autor não encontrado" });
+          next(new NaoEncontrado("Autor não encontrado"));
         }
       }
 
@@ -77,7 +80,7 @@ class LivroController {
         new: true,
       });
       if (!livroAtualizado) {
-        return res.status(404).json({ message: "Livro não encontrado" });
+        next(new NaoEncontrado("Livro não encontrado"));
       }
 
       res
