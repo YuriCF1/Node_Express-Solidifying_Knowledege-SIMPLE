@@ -111,6 +111,28 @@ class LivroController {
     }
   }
 
+  static async listrarLivroPorFiltro(req, res, next) {
+    const { autor, titulo } = req.query;
+
+    const busca = {};
+
+    if (autor) busca["autor.nome"] = autor;
+    if (titulo) busca.titulo = titulo;
+
+    try {
+      // const livrosPorAutor = await livro.find({
+      //   "autor.nome": autor,
+      //   titulo: titulo,
+      // });
+      
+      console.log(busca);
+      const livrosPorAutor = await livro.find(busca);
+      res.status(200).json(livrosPorAutor);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async buscarComplexaLivros(req, res, next) {
     const { titulo, autor, editora, precoMaximo } = req.query;
 
