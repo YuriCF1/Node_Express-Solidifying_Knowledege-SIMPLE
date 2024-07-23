@@ -1,6 +1,6 @@
 import NaoEncontrado from "../Errors/NaoEncontrado.js";
-import { autor } from "../models/Autor.js";
-import livro from "../models/Livro.js";
+import { autor } from "../models/index.js";
+import { livro } from "../models/index.js";
 class LivroController {
   static async listarLivros(req, res, next) {
     //static = Possibilita a chamada da função sem precisar criar um classe com 'new'
