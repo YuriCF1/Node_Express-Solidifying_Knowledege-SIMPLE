@@ -1,13 +1,28 @@
 import NaoEncontrado from "../Errors/NaoEncontrado.js";
+import RequisicaoIncorreta from "../Errors/RequisicaoIncorreta.js";
 import { autor } from "../models/index.js";
 import { livro } from "../models/index.js";
 class LivroController {
   static async listarLivros(req, res, next) {
     //static = Possibilita a chamada da função sem precisar criar um classe com 'new'
     try {
+      let { limite = 1, pagina = 1 } = req.query; //PAGINAÇÃO
       // throw new Error();
-      const listaLivros = await livro.find({}); //find = método mongoose. Não passei parâmetro então ele vai trazer tudo
-      res.status(200).json(listaLivros);
+
+      limite - parseInt(limite);
+      pagina - parseInt(pagina);
+
+      if (limite > 0 && pagina > 0) {
+        const listaLivros = await livro
+          .find({}) //find = método mongoose. Não passei parâmetro então ele vai trazer tudo
+          .skip((pagina - 1) * limite) //Se tiver na pagina 1 -> 1-1 = 0 * 1 = 0 -> Não vai pular livro nenhum
+          .limit(limite);
+        res.status(200).json(listaLivros);
+      } else {
+        next(
+          new RequisicaoIncorreta("Dados de paginação incorretos")
+        );
+      }
     } catch (error) {
       next(error);
     }

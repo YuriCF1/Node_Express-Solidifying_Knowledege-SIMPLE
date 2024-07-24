@@ -20,7 +20,7 @@ class AutorController {
         .status(201)
         .json({ message: "Autor cadastrado com sucesso", autor: novoAutor });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -31,10 +31,10 @@ class AutorController {
       if (autorBuscado) {
         res.status(201).json(autorBuscado);
       } else {
-        next(new NaoEncontrado("Autor não encontrado"))
+        next(new NaoEncontrado("Autor não encontrado"));
       }
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -44,7 +44,7 @@ class AutorController {
       await autor.findByIdAndUpdate(idAutor, req.body); //https://mongoosejs.com/docs/api/model.html#Model.findByIdAndUpdate()
       res.status(201).json({ message: "Autor atualizado" });
     } catch (error) {
-      next(err)
+      next(err);
     }
   }
 
@@ -54,7 +54,7 @@ class AutorController {
       await autor.findByIdAndDelete(idAutor);
       res.status(200).json({ message: "Autor excluído com sucesso!" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 }
