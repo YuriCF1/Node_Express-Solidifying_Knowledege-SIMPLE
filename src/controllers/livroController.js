@@ -112,13 +112,14 @@ class LivroController {
   }
 
   static async listrarLivroPorFiltro(req, res, next) {
-    const { autor, titulo, minPaginas, maxPaginas } = req.query;
+    const { titulo, autor, editora, minPaginas, maxPaginas } = req.query;
     const regexTitulo = new RegExp(titulo, "i"); //i = Case insensitive
 
     const busca = {};
 
-    if (autor) busca["autor.nome"] = autor;
     if (titulo) busca.titulo = { $regex: titulo, $options: "i" }; //Dessa forma, utiliza operadores do mongoose. Mas também posso passar o regexTitulo
+    if (autor) busca["autor.nome"] = autor;
+    if (editora) busca.editora = editora;
     if (minPaginas) busca.paginas = { ...busca.paginas, $gte: minPaginas };
     if (maxPaginas) busca.paginas = { ...busca.paginas, $lte: maxPaginas };
 
