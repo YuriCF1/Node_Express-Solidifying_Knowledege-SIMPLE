@@ -7,7 +7,7 @@ class LivroController {
     console.log(req.query);
     //static = Possibilita a chamada da função sem precisar criar um classe com 'new'
     try {
-      console.log('BUSCANDO');
+      console.log("BUSCANDO");
       const buscaLivros = livro.find({});
       req.resultado = buscaLivros; //Criando propriedade de 'resultado' para passar para o middleware seguinte, sendo este responsável pela paginação
       next();
@@ -132,7 +132,7 @@ class LivroController {
   }
 
   static async listarLivroPorAutor(req, res, next) {
-    const nomeAutor = req.query.autor;
+    const nomeAutor = req.query.nomeAutor;
     try {
       const livrosPorAutor = await livro.find({ "autor.nome": nomeAutor });
       res.status(200).json(livrosPorAutor);
@@ -142,13 +142,13 @@ class LivroController {
   }
 
   static async listrarLivroPorFiltro(req, res, next) {
-    const { titulo, autor, editora, minPaginas, maxPaginas } = req.query;
+    const { titulo, nomeAutor, editora, minPaginas, maxPaginas } = req.query;
     const regexTitulo = new RegExp(titulo, "i"); //i = Case insensitive
 
     const busca = {};
 
     if (titulo) busca.titulo = { $regex: titulo, $options: "i" }; //Dessa forma, utiliza operadores do mongoose. Mas também posso passar o regexTitulo
-    if (autor) busca["autor.nome"] = autor;
+    if (nomeAutor) busca["autor.nome"] = nomeAutor;
     if (editora) busca.editora = editora;
     if (minPaginas) busca.paginas = { ...busca.paginas, $gte: minPaginas };
     if (maxPaginas) busca.paginas = { ...busca.paginas, $lte: maxPaginas };
@@ -168,7 +168,7 @@ class LivroController {
   }
 
   static async buscarComplexaLivros(req, res, next) {
-    const { titulo, autor, editora, precoMaximo } = req.query;
+    const { titulo, nomeAutor, editora, precoMaximo } = req.query;
 
     let query = {};
 
@@ -176,8 +176,8 @@ class LivroController {
       query.titulo = { $regex: titulo, $options: "i" }; // Busca case-insensitive por título
     }
 
-    if (autor) {
-      query["autor.nome"] = { $regex: autor, $options: "i" }; // Busca case-insensitive por nome do autor
+    if (nomeAutor) {
+      query["autor.nome"] = { $regex: nomeAutor, $options: "i" }; // Busca case-insensitive por nome do autor
     }
 
     if (editora) {
